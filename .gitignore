@@ -19,3 +19,5 @@ node_modules/
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+
+src/app/enscribe.dev-3.1.0/

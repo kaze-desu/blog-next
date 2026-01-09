@@ -2,6 +2,11 @@ import type { Metadata } from 'next'
 
 import { RelatedPosts } from '@/blocks/RelatedPosts/Component'
 import { PayloadRedirects } from '@/components/PayloadRedirects'
+import { Breadcrumbs } from '@/components/enscribe/blog/Breadcrumbs'
+import { CategoryBadge } from '@/components/enscribe/blog/CategoryBadge'
+import { PostNavigation } from '@/components/enscribe/blog/PostNavigation'
+import { PostWithTOC } from '@/components/enscribe/blog/PostWithTOC.client'
+import { Media } from '@/components/Media'
 import configPromise from '@payload-config'
 import { getPayload } from 'payload'
 import { draftMode } from 'next/headers'
@@ -10,8 +15,11 @@ import RichText from '@/components/RichText'
 
 import type { Post } from '@/payload-types'
 
+import { formatAuthors } from '@/utilities/formatAuthors'
+import { formatDateTime } from '@/utilities/formatDateTime'
 import { PostHero } from '@/heros/PostHero'
 import { generateMeta } from '@/utilities/generateMeta'
+import { readingTimeFromLexical } from '@/utilities/readingTime'
 import PageClient from './page.client'
 import { LivePreviewListener } from '@/components/LivePreviewListener'
 
@@ -51,27 +59,128 @@ export default async function Post({ params: paramsPromise }: Args) {
 
   if (!post) return <PayloadRedirects url={url} />
 
-  return (
-    <article className="pt-16 pb-16">
-      <PageClient />
+  // Old template mode
+  if ((process.env.FRONTEND_SHELL || 'template') !== 'enscribe') {
+    return (
+      <article className="pt-16 pb-16">
+        <PageClient />
 
+        {/* Allows redirects for valid pages too */}
+        <PayloadRedirects disableNotFound url={url} />
+
+        {draft && <LivePreviewListener />}
+
+        {/* Reuse existing template hero + body */}
+        <PostHero post={post} />
+
+        <div className="flex flex-col items-center gap-4 pt-8">
+          <div className="container">
+            <RichText className="max-w-[48rem] mx-auto" data={post.content} enableGutter={false} />
+            {/* RelatedPosts intentionally omitted in enscribe mode; keep in template mode */}
+            {post.relatedPosts && post.relatedPosts.length > 0 && (
+              <RelatedPosts
+                className="mt-12 max-w-[52rem] lg:grid lg:grid-cols-subgrid col-start-1 col-span-3 grid-rows-[2fr]"
+                docs={post.relatedPosts.filter((p) => typeof p === 'object')}
+              />
+            )}
+          </div>
+        </div>
+      </article>
+    )
+  }
+
+  const breadcrumbs = [
+    { href: '/posts', label: 'Posts' },
+    { label: post.title },
+  ]
+
+  const heroMedia = post.heroImage && typeof post.heroImage !== 'string' ? post.heroImage : null
+  const metaMedia = post?.meta?.image && typeof post.meta.image !== 'string' ? post.meta.image : null
+  const cover = heroMedia || metaMedia
+
+  const authorLabel =
+    post.populatedAuthors && post.populatedAuthors.length > 0 ? formatAuthors(post.populatedAuthors) : ''
+  const dateValue = post.publishedAt || post.createdAt
+  const dateLabel = dateValue ? formatDateTime(String(dateValue)) : ''
+  const readTime = readingTimeFromLexical(post.content)
+
+  const categoryLabels =
+    Array.isArray(post.categories) && post.categories.length > 0
+      ? post.categories
+          .map((c) => (typeof c === 'object' && c && 'title' in c ? (c as { title?: unknown }).title : null))
+          .filter((t): t is string => typeof t === 'string' && t.length > 0)
+      : []
+
+  const { olderPost, newerPost } = await queryAdjacentPosts({ current: post })
+
+  return (
+    <article className="py-10">
       {/* Allows redirects for valid pages too */}
       <PayloadRedirects disableNotFound url={url} />
 
       {draft && <LivePreviewListener />}
 
-      <PostHero post={post} />
+      <div className="mx-auto w-full max-w-5xl px-4">
+        <PostWithTOC>
+          <section className="mx-auto w-full max-w-3xl">
+            <Breadcrumbs items={breadcrumbs} />
 
-      <div className="flex flex-col items-center gap-4 pt-8">
-        <div className="container">
-          <RichText className="max-w-[48rem] mx-auto" data={post.content} enableGutter={false} />
-          {post.relatedPosts && post.relatedPosts.length > 0 && (
-            <RelatedPosts
-              className="mt-12 max-w-[52rem] lg:grid lg:grid-cols-subgrid col-start-1 col-span-3 grid-rows-[2fr]"
-              docs={post.relatedPosts.filter((post) => typeof post === 'object')}
-            />
-          )}
-        </div>
+            {cover ? (
+              <div className="mx-auto mt-6 w-full max-w-5xl">
+                <div className="relative aspect-[1200/630] w-full overflow-hidden border">
+                  <Media fill imgClassName="object-cover" pictureClassName="absolute inset-0" resource={cover} />
+                </div>
+              </div>
+            ) : null}
+
+            <section className="mt-6 flex flex-col gap-y-6 text-center">
+              <div className="flex flex-col">
+                <h1
+                  className="mb-2 scroll-mt-24 text-3xl font-medium leading-tight sm:text-4xl"
+                  id="post-title"
+                >
+                  {post.title}
+                </h1>
+
+                <div className="divide-border mb-4 flex flex-col items-center justify-center divide-y text-xs text-muted-foreground sm:flex-row sm:flex-wrap sm:divide-x sm:divide-y-0 sm:text-sm">
+                  {authorLabel ? (
+                    <div className="flex w-full items-center justify-center gap-x-2 py-2 sm:w-fit sm:px-2 sm:py-0 first:sm:pl-0 last:sm:pr-0">
+                      <span className="text-foreground">{authorLabel}</span>
+                    </div>
+                  ) : null}
+
+                  {dateLabel ? (
+                    <div className="flex w-full items-center justify-center gap-2 py-2 sm:w-fit sm:px-2 sm:py-0 first:sm:pl-0 last:sm:pr-0">
+                      <span>{dateLabel}</span>
+                    </div>
+                  ) : null}
+
+                  <div className="flex w-full items-center justify-center gap-2 py-2 sm:w-fit sm:px-2 sm:py-0 first:sm:pl-0 last:sm:pr-0">
+                    <span>{readTime}</span>
+                  </div>
+                </div>
+
+                {categoryLabels.length > 0 ? (
+                  <div className="flex flex-wrap justify-center gap-2">
+                    {categoryLabels.map((label) => (
+                      <CategoryBadge key={label} label={label} />
+                    ))}
+                  </div>
+                ) : null}
+              </div>
+
+              <PostNavigation newerPost={newerPost} olderPost={olderPost} />
+            </section>
+
+            <div className="mt-6">
+              <RichText className="max-w-none" data={post.content} enableGutter={false} />
+            </div>
+
+            <div className="mt-8">
+              <PostNavigation newerPost={newerPost} olderPost={olderPost} />
+            </div>
+          </section>
+        </PostWithTOC>
       </div>
     </article>
   )
@@ -105,4 +214,52 @@ const queryPostBySlug = cache(async ({ slug }: { slug: string }) => {
   })
 
   return result.docs?.[0] || null
+})
+
+const queryAdjacentPosts = cache(async ({ current }: { current: Post }) => {
+  const payload = await getPayload({ config: configPromise })
+
+  const orderField: 'publishedAt' | 'createdAt' = current.publishedAt ? 'publishedAt' : 'createdAt'
+  const orderValue = (current[orderField] || current.createdAt) as string
+
+  const [older, newer] = await Promise.all([
+    payload.find({
+      collection: 'posts',
+      depth: 0,
+      limit: 1,
+      overrideAccess: false,
+      pagination: false,
+      sort: `-${orderField}`,
+      select: { slug: true, title: true },
+      where: {
+        [orderField]: { less_than: orderValue },
+      },
+    }),
+    payload.find({
+      collection: 'posts',
+      depth: 0,
+      limit: 1,
+      overrideAccess: false,
+      pagination: false,
+      sort: orderField,
+      select: { slug: true, title: true },
+      where: {
+        [orderField]: { greater_than: orderValue },
+      },
+    }),
+  ])
+
+  const olderDoc = older.docs?.[0]
+  const newerDoc = newer.docs?.[0]
+
+  const olderPost =
+    olderDoc && typeof olderDoc.slug === 'string' && typeof olderDoc.title === 'string'
+      ? { slug: olderDoc.slug, title: olderDoc.title }
+      : null
+  const newerPost =
+    newerDoc && typeof newerDoc.slug === 'string' && typeof newerDoc.title === 'string'
+      ? { slug: newerDoc.slug, title: newerDoc.title }
+      : null
+
+  return { olderPost, newerPost }
 })

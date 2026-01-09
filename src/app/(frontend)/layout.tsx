@@ -6,6 +6,7 @@ import { GeistSans } from 'geist/font/sans'
 import React from 'react'
 
 import { AdminBar } from '@/components/AdminBar'
+import { EnscribeShell } from '@/components/enscribe/EnscribeShell'
 import { Footer } from '@/Footer/Component'
 import { Header } from '@/Header/Component'
 import { Providers } from '@/providers'
@@ -18,6 +19,7 @@ import { getServerSideURL } from '@/utilities/getURL'
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const { isEnabled } = await draftMode()
+  const frontendShell = process.env.FRONTEND_SHELL || 'template'
 
   return (
     <html className={cn(GeistSans.variable, GeistMono.variable)} lang="en" suppressHydrationWarning>
@@ -34,9 +36,15 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             }}
           />
 
-          <Header />
-          {children}
-          <Footer />
+          {frontendShell === 'enscribe' ? (
+            <EnscribeShell>{children}</EnscribeShell>
+          ) : (
+            <>
+              <Header />
+              {children}
+              <Footer />
+            </>
+          )}
         </Providers>
       </body>
     </html>
