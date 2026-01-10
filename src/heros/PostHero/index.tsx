@@ -5,14 +5,21 @@ import type { Post } from '@/payload-types'
 
 import { Media } from '@/components/Media'
 import { formatAuthors } from '@/utilities/formatAuthors'
+import { Calendar, User, Hash, ArrowRight } from 'lucide-react'
+import { cn } from '@/utilities/ui'
 
 export const PostHero: React.FC<{
   post: Post
 }> = ({ post }) => {
-  const { categories, heroImage, populatedAuthors, publishedAt, title } = post
+  const { categories, heroImage, populatedAuthors, publishedAt, lastEdited, tags, title } = post
 
   const hasAuthors =
     populatedAuthors && populatedAuthors.length > 0 && formatAuthors(populatedAuthors) !== ''
+
+  const hasTags =
+    Array.isArray(tags) &&
+    tags.length > 0 &&
+    tags.some((tag) => typeof tag === 'object' && tag !== null)
 
   return (
     <div className="relative -mt-[10.4rem] flex items-end">
@@ -39,24 +46,58 @@ export const PostHero: React.FC<{
           </div>
 
           <div className="">
-            <h1 className="mb-6 text-3xl md:text-5xl lg:text-6xl">{title}</h1>
+            <h1 className="mb-6 text-4xl md:text-6xl lg:text-7xl xl:text-8xl">{title}</h1>
           </div>
 
-          <div className="flex flex-col md:flex-row gap-4 md:gap-16">
-            {hasAuthors && (
-              <div className="flex flex-col gap-4">
-                <div className="flex flex-col gap-1">
-                  <p className="text-sm">Author</p>
+          <div className="flex flex-col gap-3">
+            <div className="flex flex-wrap items-center gap-2">
+              {hasAuthors && (
+                <span
+                  className={cn(
+                    'inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/10 backdrop-blur-sm px-3 py-1.5 text-sm',
+                  )}
+                >
+                  <User className="h-3.5 w-3.5" />
+                  <span>{formatAuthors(populatedAuthors)}</span>
+                </span>
+              )}
+              {publishedAt && (
+                <span
+                  className={cn(
+                    'inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/10 backdrop-blur-sm px-3 py-1.5 text-sm',
+                  )}
+                >
+                  <Calendar className="h-3.5 w-3.5" />
+                  <time dateTime={publishedAt}>{formatDateTime(publishedAt)}</time>
+                  {lastEdited && lastEdited !== publishedAt && (
+                    <>
+                      <ArrowRight className="h-3 w-3 mx-0.5" />
+                      <time dateTime={lastEdited}>{formatDateTime(lastEdited)}</time>
+                    </>
+                  )}
+                </span>
+              )}
+            </div>
 
-                  <p>{formatAuthors(populatedAuthors)}</p>
-                </div>
-              </div>
-            )}
-            {publishedAt && (
-              <div className="flex flex-col gap-1">
-                <p className="text-sm">Date Published</p>
-
-                <time dateTime={publishedAt}>{formatDateTime(publishedAt)}</time>
+            {hasTags && (
+              <div className="flex flex-wrap items-center gap-2">
+                {tags.map((tag) => {
+                  if (typeof tag === 'object' && tag !== null && 'title' in tag && tag.title) {
+                    const tagId = 'id' in tag ? tag.id : String(tag)
+                    return (
+                      <span
+                        key={tagId}
+                        className={cn(
+                          'inline-flex items-center gap-1 rounded-full border border-white/20 bg-white/10 backdrop-blur-sm px-2.5 py-1 text-xs',
+                        )}
+                      >
+                        <Hash className="h-3 w-3" />
+                        <span>{tag.title}</span>
+                      </span>
+                    )
+                  }
+                  return null
+                })}
               </div>
             )}
           </div>

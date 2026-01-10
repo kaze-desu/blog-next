@@ -61,10 +61,12 @@ export const Code: React.FC<Props> = ({ code, language = '' }) => {
               {language}
             </div>
           )}
-          <pre className="font-mono text-xs overflow-x-auto pl-1 pr-4 py-4">
+          <pre className="font-mono text-xs overflow-x-auto relative py-4">
+            {/* Full-height border positioned relative to pre */}
+            <div className="absolute top-0 bottom-0 left-[2.5rem] w-px bg-[#d0d7de] dark:bg-[#30363d] pointer-events-none"></div>
             <div className="flex">
-              {/* Line numbers column */}
-              <div className="flex-shrink-0 w-10 pr-2 text-right select-none text-[#8c959f] dark:text-[#6e7681] border-r border-[#d0d7de] dark:border-[#30363d] mr-4">
+              {/* Line numbers column with darker background */}
+              <div className="flex-shrink-0 w-10 text-center select-none text-[#8c959f] dark:text-[#6e7681] bg-[#f0f2f5] dark:bg-[#0d1117] mr-4 -my-4 py-4">
                 {tokens.map((_, i) => (
                   <div key={i} className="leading-6">
                     {i + 1}
@@ -72,7 +74,7 @@ export const Code: React.FC<Props> = ({ code, language = '' }) => {
                 ))}
               </div>
               {/* Code content column */}
-              <div className="flex-1 min-w-0">
+              <div className="flex-1 min-w-0 pr-4">
                 {tokens.map((line, i) => (
                   <div key={i} {...getLineProps({ line })} className="leading-6">
                     {line.map((token, key) => (
