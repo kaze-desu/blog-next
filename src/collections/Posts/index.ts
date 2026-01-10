@@ -199,7 +199,8 @@ export const Posts: CollectionConfig<'posts'> = {
           pickerAppearance: 'dayAndTime',
         },
         position: 'sidebar',
-        description: 'Date when the post was last edited. Leave empty if not edited after publication.',
+        description:
+          'Date when the post was last edited. Leave empty if not edited after publication.',
       },
     },
     {
