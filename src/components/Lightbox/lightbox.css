@@ -1,0 +1,28 @@
+/* Lightbox backdrop styling with blur effect matching blog theme */
+.yarl__root {
+  --yarl__color_backdrop: hsl(var(--background) / 0.5);
+}
+
+.yarl__backdrop {
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  background-color: hsl(var(--background) / 0.95) !important;
+}
+
+/* Dark mode: make it darker for better contrast */
+[data-theme='dark'] .yarl__backdrop {
+  background-color: hsl(var(--background) / 0.98) !important;
+}
+
+/* Light mode: add slight darkening for contrast */
+[data-theme='light'] .yarl__backdrop {
+  background-color: hsl(0 0% 0% / 0.6) !important;
+}
+
+/* Style captions to match blog post caption styling */
+.yarl__caption {
+  font-size: 0.875rem; /* text-sm */
+  text-align: center;
+  color: rgb(107 114 128); /* text-gray-500 */
+  margin-top: 0.5rem;
+}

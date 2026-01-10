@@ -12,6 +12,7 @@ import { getPayload } from 'payload'
 import { draftMode } from 'next/headers'
 import React, { cache } from 'react'
 import RichText from '@/components/RichText'
+import { RichTextWithLightbox } from '@/components/Lightbox/RichTextWithLightbox.client'
 
 import type { Post } from '@/payload-types'
 
@@ -75,7 +76,7 @@ export default async function Post({ params: paramsPromise }: Args) {
 
         <div className="flex flex-col items-center gap-4 pt-8">
           <div className="container">
-            <RichText className="max-w-[48rem] mx-auto" data={post.content} enableGutter={false} />
+            <RichTextWithLightbox className="max-w-[48rem] mx-auto" data={post.content} enableGutter={false} />
             {/* RelatedPosts intentionally omitted in enscribe mode; keep in template mode */}
             {post.relatedPosts && post.relatedPosts.length > 0 && (
               <RelatedPosts
@@ -173,7 +174,7 @@ export default async function Post({ params: paramsPromise }: Args) {
             </section>
 
             <div className="mt-6">
-              <RichText className="max-w-none" data={post.content} enableGutter={false} />
+              <RichTextWithLightbox className="max-w-none" data={post.content} enableGutter={false} />
             </div>
 
             <div className="mt-8">
