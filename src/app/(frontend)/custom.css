@@ -1,0 +1,46 @@
+/* Custom Scrollbar Styles - Slim and clean with no background track */
+
+/* Webkit browsers (Chrome, Safari, Edge) */
+::-webkit-scrollbar {
+  width: 8px; /* vertical scrollbar */
+  height: 8px; /* horizontal scrollbar */
+}
+
+::-webkit-scrollbar-track {
+  background: transparent; /* no background track */
+}
+
+/* Light theme scrollbar thumb */
+[data-theme='light'] ::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+
+[data-theme='light'] ::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.3);
+}
+
+/* Dark theme scrollbar thumb */
+[data-theme='dark'] ::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+
+[data-theme='dark'] ::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Firefox scrollbar styles */
+* {
+  scrollbar-width: thin;
+}
+
+/* Light theme for Firefox */
+[data-theme='light'] * {
+  scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+}
+
+/* Dark theme for Firefox */
+[data-theme='dark'] * {
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}

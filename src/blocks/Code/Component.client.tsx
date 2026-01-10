@@ -61,7 +61,7 @@ export const Code: React.FC<Props> = ({ code, language = '' }) => {
               {language}
             </div>
           )}
-          <pre className="font-mono text-xs overflow-x-auto relative py-4">
+          <pre className="font-mono text-sm overflow-x-auto relative py-4">
             {/* Full-height border positioned relative to pre */}
             <div className="absolute top-0 bottom-0 left-[2.5rem] w-px bg-[#d0d7de] dark:bg-[#30363d] pointer-events-none"></div>
             <div className="flex">

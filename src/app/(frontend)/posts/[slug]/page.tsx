@@ -20,7 +20,7 @@ import { formatAuthors } from '@/utilities/formatAuthors'
 import { formatDateTime } from '@/utilities/formatDateTime'
 import { PostHero } from '@/heros/PostHero'
 import { generateMeta } from '@/utilities/generateMeta'
-import { readingTimeFromLexical } from '@/utilities/readingTime'
+import { readingTimeFromLexical, lexicalWordCount } from '@/utilities/readingTime'
 import PageClient from './page.client'
 import { LivePreviewListener } from '@/components/LivePreviewListener'
 
