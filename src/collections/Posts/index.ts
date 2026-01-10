@@ -42,6 +42,7 @@ export const Posts: CollectionConfig<'posts'> = {
     title: true,
     slug: true,
     categories: true,
+    tags: true,
     meta: {
       image: true,
       description: true,
@@ -129,6 +130,15 @@ export const Posts: CollectionConfig<'posts'> = {
               hasMany: true,
               relationTo: 'categories',
             },
+            {
+              name: 'tags',
+              type: 'relationship',
+              admin: {
+                position: 'sidebar',
+              },
+              hasMany: true,
+              relationTo: 'tags',
+            },
           ],
           label: 'Meta',
         },
@@ -179,6 +189,17 @@ export const Posts: CollectionConfig<'posts'> = {
             return value
           },
         ],
+      },
+    },
+    {
+      name: 'lastEdited',
+      type: 'date',
+      admin: {
+        date: {
+          pickerAppearance: 'dayAndTime',
+        },
+        position: 'sidebar',
+        description: 'Date when the post was last edited. Leave empty if not edited after publication.',
       },
     },
     {
