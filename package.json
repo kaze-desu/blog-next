@@ -15,6 +15,7 @@
     "lint": "cross-env NODE_OPTIONS=--no-deprecation next lint",
     "lint:fix": "cross-env NODE_OPTIONS=--no-deprecation next lint --fix",
     "payload": "cross-env NODE_OPTIONS=--no-deprecation payload",
+    "prepare": "husky",
     "reinstall": "cross-env NODE_OPTIONS=--no-deprecation rm -rf node_modules && rm pnpm-lock.yaml && pnpm --ignore-workspace install",
     "start": "cross-env NODE_OPTIONS=--no-deprecation next start",
     "test": "pnpm run test:int && pnpm run test:e2e",
@@ -23,6 +24,7 @@
   },
   "dependencies": {
     "@payloadcms/admin-bar": "3.70.0",
+    "@payloadcms/db-sqlite": "3.70.0",
     "@payloadcms/live-preview-react": "3.70.0",
     "@payloadcms/next": "3.70.0",
     "@payloadcms/plugin-form-builder": "3.70.0",
@@ -53,9 +55,11 @@
     "sharp": "0.34.2",
     "tailwind-merge": "^2.3.0",
     "tailwindcss-animate": "^1.0.7",
-    "@payloadcms/db-sqlite": "3.70.0"
+    "yet-another-react-lightbox": "^3.28.0"
   },
   "devDependencies": {
+    "@commitlint/cli": "^20.3.1",
+    "@commitlint/config-conventional": "^20.3.1",
     "@eslint/eslintrc": "^3.2.0",
     "@playwright/test": "1.56.1",
     "@tailwindcss/typography": "^0.5.13",
@@ -69,6 +73,7 @@
     "copyfiles": "^2.4.1",
     "eslint": "^9.16.0",
     "eslint-config-next": "15.4.7",
+    "husky": "^9.1.7",
     "jsdom": "26.1.0",
     "playwright": "1.56.1",
     "playwright-core": "1.56.1",
