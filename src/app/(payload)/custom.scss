@@ -1,0 +1,47 @@
+/* Maple Font Mono for Monaco Editor in Payload Admin Panel */
+
+/* Import Maple Font Mono via CDN */
+@font-face {
+  font-family: 'Maple Mono';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src: url(https://cdn.jsdelivr.net/fontsource/fonts/maple-mono@latest/latin-400-normal.woff2) format('woff2'),
+    url(https://cdn.jsdelivr.net/fontsource/fonts/maple-mono@latest/latin-400-normal.woff) format('woff');
+}
+
+@font-face {
+  font-family: 'Maple Mono';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 700;
+  src: url(https://cdn.jsdelivr.net/fontsource/fonts/maple-mono@latest/latin-700-normal.woff2) format('woff2'),
+    url(https://cdn.jsdelivr.net/fontsource/fonts/maple-mono@latest/latin-700-normal.woff) format('woff');
+}
+
+@font-face {
+  font-family: 'Maple Mono';
+  font-style: italic;
+  font-display: swap;
+  font-weight: 400;
+  src: url(https://cdn.jsdelivr.net/fontsource/fonts/maple-mono@latest/latin-400-italic.woff2) format('woff2'),
+    url(https://cdn.jsdelivr.net/fontsource/fonts/maple-mono@latest/latin-400-italic.woff) format('woff');
+}
+
+@font-face {
+  font-family: 'Maple Mono';
+  font-style: italic;
+  font-display: swap;
+  font-weight: 700;
+  src: url(https://cdn.jsdelivr.net/fontsource/fonts/maple-mono@latest/latin-700-italic.woff2) format('woff2'),
+    url(https://cdn.jsdelivr.net/fontsource/fonts/maple-mono@latest/latin-700-italic.woff) format('woff');
+}
+
+/* Apply Maple Font Mono to Monaco Editor */
+.monaco-editor,
+.monaco-editor .view-lines,
+.monaco-editor .monaco-mouse-cursor-text,
+.monaco-editor .view-line {
+  font-family: 'Maple Mono', monospace !important;
+  font-variant-ligatures: normal !important;
+}
