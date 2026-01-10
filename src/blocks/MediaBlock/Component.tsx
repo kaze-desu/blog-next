@@ -7,6 +7,7 @@ import RichText from '@/components/RichText'
 import type { MediaBlock as MediaBlockProps } from '@/payload-types'
 
 import { Media } from '../../components/Media'
+import { ClickableMediaWrapper } from './ClickableMediaWrapper.client'
 
 type Props = MediaBlockProps & {
   breakout?: boolean
@@ -43,23 +44,31 @@ export const MediaBlock: React.FC<Props> = (props) => {
       )}
     >
       {(media || staticImage) && (
-        <Media
-          imgClassName={cn('border border-border rounded-[0.8rem]', imgClassName)}
-          resource={media}
-          src={staticImage}
-        />
+        <>
+          {typeof media === 'object' && media && !staticImage ? (
+            <ClickableMediaWrapper media={media} imgClassName={imgClassName} />
+          ) : (
+            <Media
+              imgClassName={cn('rounded-[0.9rem]', imgClassName)}
+              resource={media}
+              src={staticImage}
+            />
+          )}
+        </>
       )}
       {caption && (
         <div
           className={cn(
-            'mt-6',
+            'mt-1',
             {
               container: !disableInnerContainer,
             },
             captionClassName,
           )}
         >
-          <RichText data={caption} enableGutter={false} />
+          <div className="text-sm text-center text-gray-500">
+            <RichText data={caption} enableGutter={false} />
+          </div>
         </div>
       )}
     </div>
