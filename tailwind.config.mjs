@@ -94,7 +94,7 @@ const config = {
         warning: 'hsl(var(--warning))',
       },
       fontFamily: {
-        mono: ['var(--font-geist-mono)'],
+        mono: ['Maple Mono', 'var(--font-geist-mono)', 'monospace'],
         sans: ['var(--font-geist-sans)'],
       },
       keyframes: {

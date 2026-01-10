@@ -2,6 +2,46 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Maple Font Mono - Regular (400) */
+@font-face {
+  font-family: 'Maple Mono';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src: url(https://cdn.jsdelivr.net/fontsource/fonts/maple-mono@latest/latin-400-normal.woff2) format('woff2'),
+    url(https://cdn.jsdelivr.net/fontsource/fonts/maple-mono@latest/latin-400-normal.woff) format('woff');
+}
+
+/* Maple Font Mono - Bold (700) */
+@font-face {
+  font-family: 'Maple Mono';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 700;
+  src: url(https://cdn.jsdelivr.net/fontsource/fonts/maple-mono@latest/latin-700-normal.woff2) format('woff2'),
+    url(https://cdn.jsdelivr.net/fontsource/fonts/maple-mono@latest/latin-700-normal.woff) format('woff');
+}
+
+/* Maple Font Mono - Regular Italic (400) */
+@font-face {
+  font-family: 'Maple Mono';
+  font-style: italic;
+  font-display: swap;
+  font-weight: 400;
+  src: url(https://cdn.jsdelivr.net/fontsource/fonts/maple-mono@latest/latin-400-italic.woff2) format('woff2'),
+    url(https://cdn.jsdelivr.net/fontsource/fonts/maple-mono@latest/latin-400-italic.woff) format('woff');
+}
+
+/* Maple Font Mono - Bold Italic (700) */
+@font-face {
+  font-family: 'Maple Mono';
+  font-style: italic;
+  font-display: swap;
+  font-weight: 700;
+  src: url(https://cdn.jsdelivr.net/fontsource/fonts/maple-mono@latest/latin-700-italic.woff2) format('woff2'),
+    url(https://cdn.jsdelivr.net/fontsource/fonts/maple-mono@latest/latin-700-italic.woff) format('woff');
+}
+
 @layer base {
   h1,
   h2,
@@ -100,4 +140,20 @@ html {
 html[data-theme='dark'],
 html[data-theme='light'] {
   opacity: initial;
+}
+
+/* Maple Font Mono ligatures for code blocks */
+.font-mono {
+  font-family: 'Maple Mono', monospace;
+  font-variant-ligatures: normal;
+}
+
+/* Code block theme-aware styling is handled via Tailwind dark: classes */
+
+/* Admin panel Monaco editor - Maple Font Mono */
+.monaco-editor,
+.monaco-editor .view-lines,
+.monaco-editor .monaco-mouse-cursor-text {
+  font-family: 'Maple Mono', monospace !important;
+  font-variant-ligatures: normal !important;
 }
