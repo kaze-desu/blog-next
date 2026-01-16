@@ -6,9 +6,10 @@ import { CopyButton } from './CopyButton'
 type Props = {
   code: string
   language?: string
+  title?: string
 }
 
-export const Code: React.FC<Props> = ({ code, language = '' }) => {
+export const Code: React.FC<Props> = ({ code, language = '', title }) => {
   // Use useState to avoid hydration errors - start with light theme (default)
   const [isDark, setIsDark] = useState(false)
 
@@ -54,11 +55,24 @@ export const Code: React.FC<Props> = ({ code, language = '' }) => {
   return (
     <Highlight code={code} language={language} theme={themeWithoutShadow}>
       {({ getLineProps, getTokenProps, tokens }) => (
-        <div className="group relative rounded-xl border border-[#d0d7de] dark:border-[#30363d] bg-[#f6f8fa] dark:bg-[#161b22] overflow-hidden">
-          <CopyButton code={code} />
-          {language && (
-            <div className="absolute bottom-3 right-3 px-2 py-1 text-[10px] font-medium text-[#656d76] dark:text-[#8b949e] bg-white/80 dark:bg-[#21262d]/80 backdrop-blur-sm rounded-lg border border-[#d0d7de] dark:border-[#30363d] uppercase">
-              {language}
+        <div className="group relative rounded-lg border border-[#d0d7de] dark:border-[#30363d] bg-[#f6f8fa] dark:bg-[#161b22] overflow-hidden">
+          {/* Top bar with language indicator, title, and copy button */}
+          <div className="relative flex items-center px-3 py-1.5 border-b border-[#d0d7de] dark:border-[#30363d] bg-[#f0f2f5] dark:bg-[#0d1117] h-8">
+            {/* Language indicator on the absolute left */}
+            {language && (
+              <div className="absolute left-3 px-2 py-0.5 text-[10px] font-medium text-[#656d76] dark:text-[#8b949e] bg-white/60 dark:bg-[#21262d]/60 backdrop-blur-sm rounded-full uppercase">
+                {language}
+              </div>
+            )}
+            {/* Title in the center */}
+            {title && (
+              <div className="absolute left-1/2 -translate-x-1/2 px-2 py-0.5 text-[11px] font-medium text-[#656d76] dark:text-[#8b949e] bg-white/60 dark:bg-[#21262d]/60 backdrop-blur-sm rounded-full truncate max-w-[60%]">
+                {title}
+              </div>
+            )}
+            {/* Copy button on the absolute right - integrated into bar */}
+            <div className="absolute right-0">
+              <CopyButton code={code} />
             </div>
           )}
           <pre className="font-mono text-sm overflow-x-auto relative py-4">

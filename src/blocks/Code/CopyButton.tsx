@@ -22,9 +22,9 @@ export function CopyButton({ code }: { code: string }) {
       title={copied ? 'Copied!' : 'Copy code'}
     >
       {copied ? (
-        <Check className="w-4 h-4 text-green-600 dark:text-green-400" />
+        <Check className="w-3.5 h-3.5 text-green-600 dark:text-green-400" />
       ) : (
-        <Copy className="w-4 h-4 text-[#656d76] dark:text-[#8b949e]" />
+        <Copy className="w-3.5 h-3.5 text-[#656d76] dark:text-[#8b949e]" />
       )}
     </button>
   )

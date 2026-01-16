@@ -12,6 +12,8 @@ import {
 } from '@payloadcms/richtext-lexical/react'
 
 import { CodeBlock, CodeBlockProps } from '@/blocks/Code/Component'
+import { MathBlock, MathBlockProps } from '@/blocks/Math/Component'
+import { MermaidBlock, MermaidBlockProps } from '@/blocks/Mermaid/Component'
 
 import type {
   BannerBlock as BannerBlockProps,
@@ -20,11 +22,19 @@ import type {
 } from '@/payload-types'
 import { BannerBlock } from '@/blocks/Banner/Component'
 import { CallToActionBlock } from '@/blocks/CallToAction/Component'
+import { processTextWithMath } from '@/components/InlineMath/InlineMath'
 import { cn } from '@/utilities/ui'
 
 type NodeTypes =
   | DefaultNodeTypes
-  | SerializedBlockNode<CTABlockProps | MediaBlockProps | BannerBlockProps | CodeBlockProps>
+  | SerializedBlockNode<
+      | CTABlockProps
+      | MediaBlockProps
+      | BannerBlockProps
+      | CodeBlockProps
+      | MathBlockProps
+      | MermaidBlockProps
+    >
 
 const internalDocToHref = ({ linkNode }: { linkNode: SerializedLinkNode }) => {
   const { value, relationTo } = linkNode.fields.doc!
@@ -38,8 +48,29 @@ const internalDocToHref = ({ linkNode }: { linkNode: SerializedLinkNode }) => {
 const jsxConverters: JSXConvertersFunction<NodeTypes> = ({ defaultConverters }) => ({
   ...defaultConverters,
   ...LinkJSXConverter({ internalDocToHref }),
+  // Custom text converter that processes inline math $...$
+  text: ({ node }) => {
+    const text = node.text
+    // Process inline math in the text
+    return processTextWithMath(text)
+  },
   blocks: {
     banner: ({ node }) => <BannerBlock className="col-start-2 mb-4" {...node.fields} />,
+    // Legacy converter for old callout blocks - convert to banner
+    callout: ({ node }: { node: { fields: any } }) => {
+      const fields = node.fields as any
+      // Map old callout type to banner style (they're the same values)
+      const style = fields.type || 'note'
+      return (
+        <BannerBlock
+          className="col-start-2 mb-4"
+          style={style}
+          title={fields.title}
+          content={fields.content}
+          blockType="banner"
+        />
+      )
+    },
     mediaBlock: ({ node }) => (
       <MediaBlock
         className="col-start-1 col-span-3"
@@ -51,6 +82,8 @@ const jsxConverters: JSXConvertersFunction<NodeTypes> = ({ defaultConverters }) 
       />
     ),
     code: ({ node }) => <CodeBlock className="col-start-2" {...node.fields} />,
+    math: ({ node }) => <MathBlock className="col-start-2" {...node.fields} />,
+    mermaid: ({ node }) => <MermaidBlock className="col-start-2" {...node.fields} />,
     cta: ({ node }) => <CallToActionBlock {...node.fields} />,
   },
 })
@@ -62,10 +95,11 @@ type Props = {
 } & React.HTMLAttributes<HTMLDivElement>
 
 export default function RichText(props: Props) {
-  const { className, enableProse = true, enableGutter = true, ...rest } = props
+  const { className, enableProse = true, enableGutter = true, data, ...rest } = props
   return (
     <ConvertRichText
       converters={jsxConverters}
+      data={data}
       className={cn(
         'payload-richtext',
         {

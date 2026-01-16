@@ -49,7 +49,7 @@ export const MediaBlock: React.FC<Props> = (props) => {
             <ClickableMediaWrapper media={media} imgClassName={imgClassName} />
           ) : (
             <Media
-              imgClassName={cn('rounded-[0.9rem]', imgClassName)}
+              imgClassName={cn('rounded-lg', imgClassName)}
               resource={media}
               src={staticImage}
             />

@@ -1796,34 +1796,13 @@ export interface TaskSchedulePublish {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "BannerBlock".
- */
-export interface BannerBlock {
-  style: 'info' | 'warning' | 'error' | 'success';
-  content: {
-    root: {
-      type: string;
-      children: {
-        type: any;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  };
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'banner';
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "CodeBlock".
  */
 export interface CodeBlock {
+  /**
+   * Optional file name or title to display in the code block bar.
+   */
+  title?: string | null;
   language?:
     | (
         | 'typescript'
@@ -1856,6 +1835,61 @@ export interface CodeBlock {
   id?: string | null;
   blockName?: string | null;
   blockType: 'code';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "BannerBlock".
+ */
+export interface BannerBlock {
+  style: 'note' | 'warning' | 'error' | 'success' | 'tip' | 'important' | 'question' | 'info';
+  /**
+   * Optional custom title. If empty, the banner type name will be used.
+   */
+  title?: string | null;
+  content: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'banner';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "MathBlock".
+ */
+export interface MathBlock {
+  /**
+   * Enter LaTeX formula for display math (block).
+   */
+  formula: string;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'math';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "MermaidBlock".
+ */
+export interface MermaidBlock {
+  /**
+   * Enter Mermaid diagram code (flowchart, sequence diagram, etc.).
+   */
+  diagram: string;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'mermaid';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

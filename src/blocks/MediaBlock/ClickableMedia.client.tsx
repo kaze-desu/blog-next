@@ -67,7 +67,7 @@ export function ClickableMedia({ media, imgClassName }: Props) {
       )}
     >
       <div className="pointer-events-none">
-        <Media imgClassName={cn('rounded-[0.9rem]', imgClassName)} resource={media} />
+        <Media imgClassName={cn('rounded-lg', imgClassName)} resource={media} />
       </div>
     </div>
   )
