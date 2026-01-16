@@ -4,7 +4,10 @@ import {
   BlocksFeature,
   FixedToolbarFeature,
   HeadingFeature,
+  InlineCodeFeature,
   InlineToolbarFeature,
+  OrderedListFeature,
+  UnorderedListFeature,
   lexicalEditor,
 } from '@payloadcms/richtext-lexical'
 
@@ -46,15 +49,18 @@ export const Banner: Block = {
       name: 'content',
       type: 'richText',
       editor: lexicalEditor({
-        features: ({ rootFeatures }) => {
+        features: ({ defaultFeatures }) => {
           return [
-            ...rootFeatures,
+            ...defaultFeatures,
             HeadingFeature({ enabledHeadingSizes: ['h2', 'h3', 'h4'] }),
             BlocksFeature({
               blocks: getBannerContentBlocks(),
             }),
             FixedToolbarFeature(),
             InlineToolbarFeature(),
+            OrderedListFeature(), // Numbered lists with nesting support
+            UnorderedListFeature(), // Bullet lists with nesting support
+            InlineCodeFeature(), // Inline code styling
           ]
         },
       }),

@@ -70,11 +70,11 @@ export const Code: React.FC<Props> = ({ code, language = '', title }) => {
                 {title}
               </div>
             )}
-            {/* Copy button on the absolute right - integrated into bar */}
-            <div className="absolute right-0">
+            {/* Copy button on the absolute right - integrated into bar, spans full height */}
+            <div className="absolute right-0 h-full">
               <CopyButton code={code} />
             </div>
-          )}
+          </div>
           <pre className="font-mono text-sm overflow-x-auto relative py-4">
             {/* Full-height border positioned relative to pre */}
             <div className="absolute top-0 bottom-0 left-[2.5rem] w-px bg-[#d0d7de] dark:bg-[#30363d] pointer-events-none"></div>
