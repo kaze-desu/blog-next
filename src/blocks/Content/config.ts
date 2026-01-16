@@ -3,7 +3,10 @@ import type { Block, Field } from 'payload'
 import {
   FixedToolbarFeature,
   HeadingFeature,
+  InlineCodeFeature,
   InlineToolbarFeature,
+  OrderedListFeature,
+  UnorderedListFeature,
   lexicalEditor,
 } from '@payloadcms/richtext-lexical'
 
@@ -37,12 +40,15 @@ const columnFields: Field[] = [
     name: 'richText',
     type: 'richText',
     editor: lexicalEditor({
-      features: ({ rootFeatures }) => {
+      features: ({ defaultFeatures }) => {
         return [
-          ...rootFeatures,
+          ...defaultFeatures,
           HeadingFeature({ enabledHeadingSizes: ['h2', 'h3', 'h4'] }),
           FixedToolbarFeature(),
           InlineToolbarFeature(),
+          OrderedListFeature(), // Numbered lists with nesting support
+          UnorderedListFeature(), // Bullet lists with nesting support
+          InlineCodeFeature(), // Inline code styling
         ]
       },
     }),

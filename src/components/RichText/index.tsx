@@ -49,19 +49,59 @@ const internalDocToHref = ({ linkNode }: { linkNode: SerializedLinkNode }) => {
 const jsxConverters: JSXConvertersFunction<NodeTypes> = ({ defaultConverters }) => ({
   ...defaultConverters,
   ...LinkJSXConverter({ internalDocToHref }),
-  // Custom text converter that processes inline math $...$
-  text: ({ node }) => {
+  // Custom text converter that processes inline math $...$ and preserves inline code formatting
+  text: (args) => {
+    const { node } = args
     const text = node.text
+
+    // Check if this text node has code formatting (inline code)
+    // In Lexical, code formatting is stored in the format property as a bitmask
+    // Format 1 = code, format 2 = bold, format 4 = italic, etc.
+    const nodeAny = node as any
+    const format = nodeAny.format
+
+    // Try multiple ways to detect code formatting
+    // In Lexical, format is a bitmask: 1 = code, 2 = bold, 4 = italic, 8 = underline, etc.
+    const hasCodeFormat =
+      (typeof format === 'number' && (format & 1) === 1) || nodeAny.code === true || format === 1
+
     // Process inline math in the text (server-safe, returns HTML string)
     const html = processTextWithMathServer(text)
-    // Return as a fragment with the HTML - React will handle it
-    if (html !== text) {
-      // Use a simple approach: return the HTML wrapped in a span
-      // This should work in both server and client contexts
+    const hasInlineMath = html !== text
+
+    // If text has code formatting, wrap in <code> tag
+    if (hasCodeFormat) {
+      // Process inline math in the text
+      if (hasInlineMath) {
+        return React.createElement('code', {
+          dangerouslySetInnerHTML: { __html: html },
+        })
+      }
+      // Otherwise, just wrap the text in a code tag
+      return React.createElement('code', {}, text)
+    }
+
+    // No code formatting - process inline math if present
+    if (hasInlineMath) {
       return React.createElement('span', {
         dangerouslySetInnerHTML: { __html: html },
       })
     }
+
+    // No special processing needed - use default converter to handle formatting
+    // This preserves bold, italic, underline, AND inline code from default converters
+    const defaultTextConverter = defaultConverters.text
+    if (typeof defaultTextConverter === 'function') {
+      try {
+        return defaultTextConverter(args)
+      } catch (error) {
+        // If default converter fails, fall back to plain text
+        console.warn('[RichText] Default text converter failed:', error)
+        return text
+      }
+    }
+
+    // Fallback to plain text
     return text
   },
   blocks: {
