@@ -157,3 +157,9 @@ html[data-theme='light'] {
   font-family: 'Maple Mono', monospace !important;
   font-variant-ligatures: normal !important;
 }
+
+/* Remove paragraph margins in banner content */
+.banner-content :where(p) {
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+}

@@ -45,3 +45,8 @@
   font-family: 'Maple Mono', monospace !important;
   font-variant-ligatures: normal !important;
 }
+
+.prose :where(p):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
+  margin-top: 0px !important;
+  margin-bottom: 0px !important;
+}

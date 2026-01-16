@@ -5,6 +5,13 @@ export const Code: Block = {
   interfaceName: 'CodeBlock',
   fields: [
     {
+      name: 'title',
+      type: 'text',
+      admin: {
+        description: 'Optional file name or title to display in the code block bar.',
+      },
+    },
+    {
       name: 'language',
       type: 'select',
       defaultValue: 'typescript',
