@@ -1,3 +1,4 @@
+import React from 'react'
 import { MediaBlock } from '@/blocks/MediaBlock/Component'
 import {
   DefaultNodeTypes,
@@ -22,7 +23,7 @@ import type {
 } from '@/payload-types'
 import { BannerBlock } from '@/blocks/Banner/Component'
 import { CallToActionBlock } from '@/blocks/CallToAction/Component'
-import { processTextWithMath } from '@/components/InlineMath/InlineMath'
+import { processTextWithMathServer } from '@/components/InlineMath/processTextWithMath'
 import { cn } from '@/utilities/ui'
 
 type NodeTypes =
@@ -51,8 +52,17 @@ const jsxConverters: JSXConvertersFunction<NodeTypes> = ({ defaultConverters }) 
   // Custom text converter that processes inline math $...$
   text: ({ node }) => {
     const text = node.text
-    // Process inline math in the text
-    return processTextWithMath(text)
+    // Process inline math in the text (server-safe, returns HTML string)
+    const html = processTextWithMathServer(text)
+    // Return as a fragment with the HTML - React will handle it
+    if (html !== text) {
+      // Use a simple approach: return the HTML wrapped in a span
+      // This should work in both server and client contexts
+      return React.createElement('span', {
+        dangerouslySetInnerHTML: { __html: html },
+      })
+    }
+    return text
   },
   blocks: {
     banner: ({ node }) => <BannerBlock className="col-start-2 mb-4" {...node.fields} />,
