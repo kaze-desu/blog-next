@@ -1893,6 +1893,41 @@ export interface MermaidBlock {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TableBlock".
+ */
+export interface TableBlock {
+  /**
+   * Define the column headers for the table.
+   */
+  headers?:
+    | {
+        header: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Add rows to the table. Each row should have the same number of cells as headers.
+   */
+  rows?:
+    | {
+        /**
+         * Add cells for this row. The number of cells should match the number of headers.
+         */
+        cells?:
+          | {
+              content: string;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'table';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "auth".
  */
 export interface Auth {

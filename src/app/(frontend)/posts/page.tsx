@@ -4,6 +4,7 @@ import { CollectionArchive } from '@/components/CollectionArchive'
 import { PageRange } from '@/components/PageRange'
 import { Pagination } from '@/components/Pagination'
 import { PostCard } from '@/components/enscribe/blog/PostCard'
+import { PageAnimation } from '@/components/PageAnimation'
 import configPromise from '@payload-config'
 import { getPayload } from 'payload'
 import React from 'react'
@@ -66,21 +67,29 @@ export default async function Page() {
     return (
       <div className="pt-24 pb-24">
         <PageClient />
-        <div className="container mb-16">
-          <div className="prose dark:prose-invert max-w-none">
-            <h1>Posts</h1>
+        <PageAnimation>
+          <div className="container mb-16">
+            <div className="prose dark:prose-invert max-w-none">
+              <h1>Posts</h1>
+            </div>
           </div>
-        </div>
+        </PageAnimation>
 
-        <div className="container mb-8">
-          <PageRange collection="posts" currentPage={posts.page} limit={PAGE_SIZE} totalDocs={posts.totalDocs} />
-        </div>
+        <PageAnimation delay={0.1}>
+          <div className="container mb-8">
+            <PageRange collection="posts" currentPage={posts.page} limit={PAGE_SIZE} totalDocs={posts.totalDocs} />
+          </div>
+        </PageAnimation>
 
-        <CollectionArchive posts={posts.docs} />
+        <PageAnimation delay={0.2}>
+          <CollectionArchive posts={posts.docs} />
+        </PageAnimation>
 
-        <div className="container">
-          {posts.totalPages > 1 && posts.page && <Pagination page={posts.page} totalPages={posts.totalPages} />}
-        </div>
+        <PageAnimation delay={0.3}>
+          <div className="container">
+            {posts.totalPages > 1 && posts.page && <Pagination page={posts.page} totalPages={posts.totalPages} />}
+          </div>
+        </PageAnimation>
       </div>
     )
   }
@@ -90,35 +99,41 @@ export default async function Page() {
 
   return (
     <div className="mx-auto w-full max-w-3xl py-10">
-      <div className="mb-6">
-        <h1 className="text-lg font-medium">Blog</h1>
-        {posts.page && (
-          <div className="mt-2 text-sm text-muted-foreground">
-            <PageRange collection="posts" currentPage={posts.page} limit={PAGE_SIZE} totalDocs={posts.totalDocs} />
-          </div>
-        )}
-      </div>
+      <PageAnimation>
+        <div className="mb-6">
+          <h1 className="text-lg font-medium">Blog</h1>
+          {posts.page && (
+            <div className="mt-2 text-sm text-muted-foreground">
+              <PageRange collection="posts" currentPage={posts.page} limit={PAGE_SIZE} totalDocs={posts.totalDocs} />
+            </div>
+          )}
+        </div>
+      </PageAnimation>
 
-      <div className="flex min-h-[calc(100vh-18rem)] flex-col gap-y-8">
-        {years.map((year) => (
-          <section className="flex flex-col gap-y-4" key={year}>
-            <div className="font-medium">{year}</div>
-            <ul className="flex flex-col gap-4">
-              {map[year]?.map((post) => {
-                const dateValue = post?.publishedAt || post?.createdAt
-                const dateLabel = dateValue ? String(new Date(dateValue).getTime()) : ''
-                return (
-                  <li key={post.slug || `${year}-${dateLabel}-${post.title || 'post'}`}>
-                    <PostCard post={post} />
-                  </li>
-                )
-              })}
-            </ul>
-          </section>
-        ))}
-      </div>
+      <PageAnimation delay={0.1}>
+        <div className="flex min-h-[calc(100vh-18rem)] flex-col gap-y-8">
+          {years.map((year) => (
+            <section className="flex flex-col gap-y-4" key={year}>
+              <div className="font-medium">{year}</div>
+              <ul className="flex flex-col gap-4">
+                {map[year]?.map((post) => {
+                  const dateValue = post?.publishedAt || post?.createdAt
+                  const dateLabel = dateValue ? String(new Date(dateValue).getTime()) : ''
+                  return (
+                    <li key={post.slug || `${year}-${dateLabel}-${post.title || 'post'}`}>
+                      <PostCard post={post} />
+                    </li>
+                  )
+                })}
+              </ul>
+            </section>
+          ))}
+        </div>
+      </PageAnimation>
 
-      {posts?.page && posts?.totalPages > 1 && <Pagination page={posts.page} totalPages={posts.totalPages} />}
+      <PageAnimation delay={0.2}>
+        {posts?.page && posts?.totalPages > 1 && <Pagination page={posts.page} totalPages={posts.totalPages} />}
+      </PageAnimation>
     </div>
   )
 }

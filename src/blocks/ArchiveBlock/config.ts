@@ -1,6 +1,7 @@
 import type { Block } from 'payload'
 
 import {
+  BlockquoteFeature,
   FixedToolbarFeature,
   HeadingFeature,
   InlineCodeFeature,
@@ -27,6 +28,7 @@ export const Archive: Block = {
             OrderedListFeature(), // Numbered lists with nesting support
             UnorderedListFeature(), // Bullet lists with nesting support
             InlineCodeFeature(), // Inline code styling
+            BlockquoteFeature(), // Blockquote support
           ]
         },
       }),
