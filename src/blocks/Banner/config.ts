@@ -2,6 +2,7 @@ import type { Block } from 'payload'
 
 import {
   BlocksFeature,
+  BlockquoteFeature,
   FixedToolbarFeature,
   HeadingFeature,
   InlineCodeFeature,
@@ -61,6 +62,7 @@ export const Banner: Block = {
             OrderedListFeature(), // Numbered lists with nesting support
             UnorderedListFeature(), // Bullet lists with nesting support
             InlineCodeFeature(), // Inline code styling
+            BlockquoteFeature(), // Blockquote support
           ]
         },
       }),

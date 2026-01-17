@@ -2,6 +2,7 @@ import type { CollectionConfig } from 'payload'
 
 import {
   BlocksFeature,
+  BlockquoteFeature,
   FixedToolbarFeature,
   HeadingFeature,
   HorizontalRuleFeature,
@@ -19,6 +20,7 @@ import { Code } from '../../blocks/Code/config'
 import { Math } from '../../blocks/Math/config'
 import { Mermaid } from '../../blocks/Mermaid/config'
 import { MediaBlock } from '../../blocks/MediaBlock/config'
+import { Table } from '../../blocks/Table/config'
 import { generatePreviewPath } from '../../utilities/generatePreviewPath'
 import { populateAuthors } from './hooks/populateAuthors'
 import { revalidateDelete, revalidatePost } from './hooks/revalidatePost'
@@ -95,13 +97,14 @@ export const Posts: CollectionConfig<'posts'> = {
                   return [
                     ...defaultFeatures,
                     HeadingFeature({ enabledHeadingSizes: ['h1', 'h2', 'h3', 'h4'] }),
-                    BlocksFeature({ blocks: [Banner, Code, Math, Mermaid, MediaBlock] }),
+                    BlocksFeature({ blocks: [Banner, Code, Math, Mermaid, MediaBlock, Table] }),
                     FixedToolbarFeature(),
                     InlineToolbarFeature(),
                     HorizontalRuleFeature(),
                     OrderedListFeature(), // Numbered lists with nesting support
                     UnorderedListFeature(), // Bullet lists with nesting support
                     InlineCodeFeature(), // Inline code styling
+                    BlockquoteFeature(), // Blockquote support
                   ]
                 },
               }),

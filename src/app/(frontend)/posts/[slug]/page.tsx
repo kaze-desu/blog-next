@@ -13,6 +13,8 @@ import { draftMode } from 'next/headers'
 import React, { cache } from 'react'
 import RichText from '@/components/RichText'
 import { RichTextWithLightbox } from '@/components/Lightbox/RichTextWithLightbox.client'
+import { PageAnimation } from '@/components/PageAnimation'
+import { ReadingProgress } from '@/components/ReadingProgress/ReadingProgress.client'
 
 import type { Post } from '@/payload-types'
 
@@ -72,35 +74,45 @@ export default async function Post({ params: paramsPromise }: Args) {
         {draft && <LivePreviewListener />}
 
         {/* Reuse existing template hero + body */}
-        <PostHero post={post} />
+        <PageAnimation>
+          <PostHero post={post} />
+        </PageAnimation>
 
-        <div className="flex flex-col items-center gap-4 pt-8">
-          <div className="container">
-            <RichTextWithLightbox className="max-w-[48rem] mx-auto" data={post.content} enableGutter={false} />
-            {/* RelatedPosts intentionally omitted in enscribe mode; keep in template mode */}
-            {post.relatedPosts && post.relatedPosts.length > 0 && (
-              <RelatedPosts
-                className="mt-12 max-w-[52rem] lg:grid lg:grid-cols-subgrid col-start-1 col-span-3 grid-rows-[2fr]"
-                docs={post.relatedPosts.filter((p) => typeof p === 'object')}
+        <PageAnimation>
+          <div className="flex flex-col items-center gap-4 pt-8">
+            <div className="container">
+              <RichTextWithLightbox
+                className="max-w-[48rem] mx-auto"
+                data={post.content}
+                enableGutter={false}
               />
-            )}
+              {/* RelatedPosts intentionally omitted in enscribe mode; keep in template mode */}
+              {post.relatedPosts && post.relatedPosts.length > 0 && (
+                <RelatedPosts
+                  className="mt-12 max-w-[52rem] lg:grid lg:grid-cols-subgrid col-start-1 col-span-3 grid-rows-[2fr]"
+                  docs={post.relatedPosts.filter((p) => typeof p === 'object')}
+                />
+              )}
+            </div>
           </div>
-        </div>
+        </PageAnimation>
+
+        <ReadingProgress />
       </article>
     )
   }
 
-  const breadcrumbs = [
-    { href: '/posts', label: 'Posts' },
-    { label: post.title },
-  ]
+  const breadcrumbs = [{ href: '/posts', label: 'Posts' }, { label: post.title }]
 
   const heroMedia = post.heroImage && typeof post.heroImage !== 'string' ? post.heroImage : null
-  const metaMedia = post?.meta?.image && typeof post.meta.image !== 'string' ? post.meta.image : null
+  const metaMedia =
+    post?.meta?.image && typeof post.meta.image !== 'string' ? post.meta.image : null
   const cover = heroMedia || metaMedia
 
   const authorLabel =
-    post.populatedAuthors && post.populatedAuthors.length > 0 ? formatAuthors(post.populatedAuthors) : ''
+    post.populatedAuthors && post.populatedAuthors.length > 0
+      ? formatAuthors(post.populatedAuthors)
+      : ''
   const dateValue = post.publishedAt || post.createdAt
   const dateLabel = dateValue ? formatDateTime(String(dateValue)) : ''
   const readTime = readingTimeFromLexical(post.content)
@@ -108,7 +120,9 @@ export default async function Post({ params: paramsPromise }: Args) {
   const categoryLabels =
     Array.isArray(post.categories) && post.categories.length > 0
       ? post.categories
-          .map((c) => (typeof c === 'object' && c && 'title' in c ? (c as { title?: unknown }).title : null))
+          .map((c) =>
+            typeof c === 'object' && c && 'title' in c ? (c as { title?: unknown }).title : null,
+          )
           .filter((t): t is string => typeof t === 'string' && t.length > 0)
       : []
 
@@ -127,62 +141,81 @@ export default async function Post({ params: paramsPromise }: Args) {
             <Breadcrumbs items={breadcrumbs} />
 
             {cover ? (
-              <div className="mx-auto mt-6 w-full max-w-5xl">
-                <div className="relative aspect-[1200/630] w-full overflow-hidden border">
-                  <Media fill imgClassName="object-cover" pictureClassName="absolute inset-0" resource={cover} />
+              <PageAnimation>
+                <div className="mx-auto mt-6 w-full max-w-5xl">
+                  <div className="relative aspect-[1200/630] w-full overflow-hidden border">
+                    <Media
+                      fill
+                      imgClassName="object-cover"
+                      pictureClassName="absolute inset-0"
+                      resource={cover}
+                    />
+                  </div>
                 </div>
-              </div>
+              </PageAnimation>
             ) : null}
 
-            <section className="mt-6 flex flex-col gap-y-6 text-center">
-              <div className="flex flex-col">
-                <h1
-                  className="mb-2 scroll-mt-24 text-3xl font-medium leading-tight sm:text-4xl"
-                  id="post-title"
-                >
-                  {post.title}
-                </h1>
+            <PageAnimation>
+              <section className="mt-6 flex flex-col gap-y-6 text-center">
+                <div className="flex flex-col">
+                  <h1
+                    className="mb-2 scroll-mt-24 text-3xl font-medium leading-tight sm:text-4xl"
+                    id="post-title"
+                  >
+                    {post.title}
+                  </h1>
 
-                <div className="divide-border mb-4 flex flex-col items-center justify-center divide-y text-xs text-muted-foreground sm:flex-row sm:flex-wrap sm:divide-x sm:divide-y-0 sm:text-sm">
-                  {authorLabel ? (
-                    <div className="flex w-full items-center justify-center gap-x-2 py-2 sm:w-fit sm:px-2 sm:py-0 first:sm:pl-0 last:sm:pr-0">
-                      <span className="text-foreground">{authorLabel}</span>
-                    </div>
-                  ) : null}
+                  <div className="divide-border mb-4 flex flex-col items-center justify-center divide-y text-xs text-muted-foreground sm:flex-row sm:flex-wrap sm:divide-x sm:divide-y-0 sm:text-sm">
+                    {authorLabel ? (
+                      <div className="flex w-full items-center justify-center gap-x-2 py-2 sm:w-fit sm:px-2 sm:py-0 first:sm:pl-0 last:sm:pr-0">
+                        <span className="text-foreground">{authorLabel}</span>
+                      </div>
+                    ) : null}
 
-                  {dateLabel ? (
+                    {dateLabel ? (
+                      <div className="flex w-full items-center justify-center gap-2 py-2 sm:w-fit sm:px-2 sm:py-0 first:sm:pl-0 last:sm:pr-0">
+                        <span>{dateLabel}</span>
+                      </div>
+                    ) : null}
+
                     <div className="flex w-full items-center justify-center gap-2 py-2 sm:w-fit sm:px-2 sm:py-0 first:sm:pl-0 last:sm:pr-0">
-                      <span>{dateLabel}</span>
+                      <span>{readTime}</span>
+                    </div>
+                  </div>
+
+                  {categoryLabels.length > 0 ? (
+                    <div className="flex flex-wrap justify-center gap-2">
+                      {categoryLabels.map((label) => (
+                        <CategoryBadge key={label} label={label} />
+                      ))}
                     </div>
                   ) : null}
-
-                  <div className="flex w-full items-center justify-center gap-2 py-2 sm:w-fit sm:px-2 sm:py-0 first:sm:pl-0 last:sm:pr-0">
-                    <span>{readTime}</span>
-                  </div>
                 </div>
 
-                {categoryLabels.length > 0 ? (
-                  <div className="flex flex-wrap justify-center gap-2">
-                    {categoryLabels.map((label) => (
-                      <CategoryBadge key={label} label={label} />
-                    ))}
-                  </div>
-                ) : null}
+                <PostNavigation newerPost={newerPost} olderPost={olderPost} />
+              </section>
+            </PageAnimation>
+
+            <PageAnimation>
+              <div className="mt-6">
+                <RichTextWithLightbox
+                  className="max-w-none"
+                  data={post.content}
+                  enableGutter={false}
+                />
               </div>
+            </PageAnimation>
 
-              <PostNavigation newerPost={newerPost} olderPost={olderPost} />
-            </section>
-
-            <div className="mt-6">
-              <RichTextWithLightbox className="max-w-none" data={post.content} enableGutter={false} />
-            </div>
-
-            <div className="mt-8">
-              <PostNavigation newerPost={newerPost} olderPost={olderPost} />
-            </div>
+            <PageAnimation>
+              <div className="mt-8">
+                <PostNavigation newerPost={newerPost} olderPost={olderPost} />
+              </div>
+            </PageAnimation>
           </section>
         </PostWithTOC>
       </div>
+
+      <ReadingProgress />
     </article>
   )
 }

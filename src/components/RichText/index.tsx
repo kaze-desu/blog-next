@@ -15,6 +15,8 @@ import {
 import { CodeBlock, CodeBlockProps } from '@/blocks/Code/Component'
 import { MathBlock, MathBlockProps } from '@/blocks/Math/Component'
 import { MermaidBlock, MermaidBlockProps } from '@/blocks/Mermaid/Component'
+import { TableBlock } from '@/blocks/Table/Component'
+import type { TableBlockProps } from '@/blocks/Table/Component'
 
 import type {
   BannerBlock as BannerBlockProps,
@@ -35,6 +37,7 @@ type NodeTypes =
       | CodeBlockProps
       | MathBlockProps
       | MermaidBlockProps
+      | TableBlockProps
     >
 
 const internalDocToHref = ({ linkNode }: { linkNode: SerializedLinkNode }) => {
@@ -134,6 +137,13 @@ const jsxConverters: JSXConvertersFunction<NodeTypes> = ({ defaultConverters }) 
     code: ({ node }) => <CodeBlock className="col-start-2" {...node.fields} />,
     math: ({ node }) => <MathBlock className="col-start-2" {...node.fields} />,
     mermaid: ({ node }) => <MermaidBlock className="col-start-2" {...node.fields} />,
+    table: ({ node }) => (
+      <TableBlock
+        key={node.fields?.id || undefined}
+        className="col-start-2 mb-4"
+        {...node.fields}
+      />
+    ),
     cta: ({ node }) => <CallToActionBlock {...node.fields} />,
   },
 })

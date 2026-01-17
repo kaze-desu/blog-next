@@ -9,6 +9,7 @@ import React from 'react'
 
 import type { Post } from '@/payload-types'
 import { MoveUpRight } from 'lucide-react'
+import { PageAnimation } from '@/components/PageAnimation'
 
 import PageTemplate, { generateMetadata as generateTemplateMetadata } from './[slug]/page'
 
@@ -52,7 +53,8 @@ export default async function HomePage() {
       )}
     >
       {/* About */}
-      <div className="aspect-[3/4] p-2 [grid-area:a] sm:aspect-[2/1] xl:aspect-[2/1]">
+      <PageAnimation>
+        <div className="aspect-[3/4] p-2 [grid-area:a] sm:aspect-[2/1] xl:aspect-[2/1]">
         <div className="size-full border bg-muted">
           <div className="size-full bg-[url('/static/bento/about-background-square.png')] bg-cover bg-center bg-no-repeat sm:bg-[url('/static/bento/about-background.png')]">
             <div className="size-full bg-[url('/static/bento/about-foreground-square.png')] bg-cover bg-center bg-no-repeat transition-opacity duration-200 sm:bg-[url('/static/bento/about-foreground.png')]">
@@ -73,9 +75,11 @@ export default async function HomePage() {
           </div>
         </div>
       </div>
+      </PageAnimation>
 
       {/* Details */}
-      <div className="aspect-square p-2 [grid-area:b]">
+      <PageAnimation delay={0.1}>
+        <div className="aspect-square p-2 [grid-area:b]">
         <div className="size-full border bg-muted">
           <div className="size-full bg-[url('/static/bento/details-background.png')] bg-cover bg-center bg-no-repeat">
             <div className="relative size-full bg-[url('/static/bento/details-foreground.png')] bg-cover bg-center bg-no-repeat transition-opacity duration-200 sm:opacity-0 sm:hover:opacity-100">
@@ -87,16 +91,20 @@ export default async function HomePage() {
           </div>
         </div>
       </div>
+      </PageAnimation>
 
       {/* Image */}
-      <div className="aspect-square p-2 [grid-area:c] sm:aspect-[1/2] lg:aspect-square xl:aspect-[1/2]">
+      <PageAnimation delay={0.2}>
+        <div className="aspect-square p-2 [grid-area:c] sm:aspect-[1/2] lg:aspect-square xl:aspect-[1/2]">
         <div className="size-full border bg-muted">
           <div className="size-full bg-[url('/static/bento/image-1.png')] bg-cover bg-center bg-no-repeat" />
         </div>
       </div>
+      </PageAnimation>
 
       {/* Latest post */}
-      <div className="aspect-[6/5] p-2 [grid-area:e] sm:aspect-[2/1]">
+      <PageAnimation delay={0.3}>
+        <div className="aspect-[6/5] p-2 [grid-area:e] sm:aspect-[2/1]">
         <div className="size-full border bg-muted">
           <div className="relative size-full bg-[url('/static/bento/blog-background-square.png')] bg-cover bg-center bg-no-repeat sm:bg-[url('/static/bento/blog-background.png')]">
             <div className="absolute size-full bg-[url('/static/bento/blog-foreground-square.png')] bg-cover bg-center bg-no-repeat transition-opacity duration-200 sm:bg-[url('/static/bento/blog-foreground.png')] sm:opacity-0 sm:hover:opacity-100">
@@ -138,6 +146,7 @@ export default async function HomePage() {
           </div>
         </div>
       </div>
+      </PageAnimation>
     </section>
   )
 }

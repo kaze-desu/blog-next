@@ -1,6 +1,7 @@
 import type { Block, Field } from 'payload'
 
 import {
+  BlockquoteFeature,
   FixedToolbarFeature,
   HeadingFeature,
   InlineCodeFeature,
@@ -49,6 +50,7 @@ const columnFields: Field[] = [
           OrderedListFeature(), // Numbered lists with nesting support
           UnorderedListFeature(), // Bullet lists with nesting support
           InlineCodeFeature(), // Inline code styling
+          BlockquoteFeature(), // Blockquote support
         ]
       },
     }),
