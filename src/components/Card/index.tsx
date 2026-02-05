@@ -61,28 +61,26 @@ export const Card: React.FC<{
       <div className={cn('p-4', variant === 'compact' && 'p-3')}>
         {showCategories && hasCategories && (
           <div className={cn('uppercase mb-4', variant === 'compact' && 'mb-2 text-xs')}>
-            {showCategories && hasCategories && (
-              <div>
-                {categories?.map((category, index) => {
-                  if (typeof category === 'object') {
-                    const { title: titleFromCategory } = category
+            <div>
+              {categories?.map((category, index) => {
+                if (typeof category === 'object') {
+                  const { title: titleFromCategory } = category
 
-                    const categoryTitle = titleFromCategory || 'Untitled category'
+                  const categoryTitle = titleFromCategory || 'Untitled category'
 
-                    const isLast = index === categories.length - 1
+                  const isLast = index === categories.length - 1
 
-                    return (
-                      <Fragment key={index}>
-                        {categoryTitle}
-                        {!isLast && <Fragment>, &nbsp;</Fragment>}
-                      </Fragment>
-                    )
-                  }
+                  return (
+                    <Fragment key={index}>
+                      {categoryTitle}
+                      {!isLast && <Fragment>, &nbsp;</Fragment>}
+                    </Fragment>
+                  )
+                }
 
-                  return null
-                })}
-              </div>
-            )}
+                return null
+              })}
+            </div>
           </div>
         )}
         {titleToUse && (
@@ -96,7 +94,7 @@ export const Card: React.FC<{
         )}
         {description && (
           <div className={cn('mt-2', variant === 'compact' && 'text-xs text-muted-foreground')}>
-            {description && <p>{variant === 'compact' ? compactDescription : sanitizedDescription}</p>}
+            <p>{variant === 'compact' ? compactDescription : sanitizedDescription}</p>
           </div>
         )}
       </div>
