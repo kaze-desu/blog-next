@@ -7,13 +7,28 @@ import { getPayload } from 'payload'
 import Link from 'next/link'
 import React from 'react'
 
-import type { Post } from '@/payload-types'
+import type { HomeLayoutBlock, Post } from '@/payload-types'
 import { MoveUpRight } from 'lucide-react'
 import { PageAnimation } from '@/components/PageAnimation'
 
 import PageTemplate, { generateMetadata as generateTemplateMetadata } from './[slug]/page'
 
 export const revalidate = 600
+
+const fallbackIntro = {
+  eyebrow: '静かな森 - 致虚极，守静笃。',
+  titlePrefix: "Hi, I'm",
+  titleHighlight: 'enscribe',
+  titleSuffix: '',
+  description:
+    'A NodeJS full-stack Developer who writes about building with Payload, Next.js, and modern UI.',
+}
+
+const fallbackFriends = {
+  title: 'Friends Links',
+  description: 'No friends yet...',
+  links: [],
+}
 
 export default async function HomePage() {
   // Allow keeping old homepage when not migrating
@@ -26,126 +41,219 @@ export default async function HomePage() {
   const latestPosts = await payload.find({
     collection: 'posts',
     depth: 1,
-    limit: 1,
+    limit: 6,
     overrideAccess: false,
     sort: '-publishedAt',
     select: {
       title: true,
       slug: true,
       meta: true,
+      publishedAt: true,
     },
   })
 
-  const latestPost = (latestPosts.docs?.[0] ?? null) as Pick<Post, 'slug' | 'title' | 'meta'> | null
+  const homePage = await payload.find({
+    collection: 'pages',
+    limit: 1,
+    pagination: false,
+    overrideAccess: false,
+    where: {
+      slug: {
+        equals: 'home',
+      },
+    },
+    select: {
+      layout: true,
+    },
+  })
 
-  const latestPostHref = latestPost?.slug ? `/posts/${latestPost.slug}` : null
-  const latestPostImage = latestPost?.meta?.image
-  const latestPostTitle = latestPost?.title || latestPost?.meta?.title
+  const homeLayoutBlock = homePage.docs?.[0]?.layout?.find(
+    (block): block is HomeLayoutBlock => block.blockType === 'homeLayout',
+  )
+
+  const intro = {
+    ...fallbackIntro,
+    ...homeLayoutBlock?.intro,
+  }
+
+  const friends = {
+    ...fallbackFriends,
+    ...homeLayoutBlock?.friends,
+  }
+
+  const latestPostDocs = (latestPosts.docs ?? []) as Array<
+    Pick<Post, 'slug' | 'title' | 'meta' | 'publishedAt'>
+  >
+
+  const [featuredPost, ...morePosts] = latestPostDocs
+
+  const featuredPostHref = featuredPost?.slug ? `/posts/${featuredPost.slug}` : null
+  const featuredPostImage = featuredPost?.meta?.image
+  const featuredPostTitle = featuredPost?.title || featuredPost?.meta?.title
+
+  const formatPublishedAt = (publishedAt?: string | null) => {
+    if (!publishedAt) return null
+    const date = new Date(publishedAt)
+    if (Number.isNaN(date.getTime())) return null
+    return new Intl.DateTimeFormat('zh-CN', { dateStyle: 'medium' }).format(date)
+  }
 
   return (
-    <section
-      className={cn(
-        'mx-auto grid max-w-sm grid-cols-1 px-2',
-        '[grid-template-areas:"a""b""e""c"]',
-        'sm:max-w-2xl sm:grid-cols-2 sm:[grid-template-areas:"a_a""b_c""e_e"]',
-        'lg:max-w-5xl lg:grid-cols-3 lg:[grid-template-areas:"a_a_b""c_e_e"]',
-        'xl:max-w-7xl xl:grid-cols-4 xl:[grid-template-areas:"a_a_b_c""e_e_e_e"]',
-      )}
-    >
-      {/* About */}
+    <section className={cn('mx-auto flex max-w-3xl flex-col gap-12 px-4 py-12 sm:py-16')}>
       <PageAnimation>
-        <div className="aspect-[3/4] p-2 [grid-area:a] sm:aspect-[2/1] xl:aspect-[2/1]">
-        <div className="size-full border bg-muted">
-          <div className="size-full bg-[url('/static/bento/about-background-square.png')] bg-cover bg-center bg-no-repeat sm:bg-[url('/static/bento/about-background.png')]">
-            <div className="size-full bg-[url('/static/bento/about-foreground-square.png')] bg-cover bg-center bg-no-repeat transition-opacity duration-200 sm:bg-[url('/static/bento/about-foreground.png')]">
-              <div className="flex p-4">
-                <div className="hidden w-1/3 sm:block" />
-                <div className="space-y-4 sm:w-2/3">
-                  <p className="block border bg-background p-3 text-sm text-pretty text-foreground/80">
-                    Hey, I&rsquo;m <b>enscribe</b>! This is our new homepage shell powered by Payload
-                    CMS.
-                  </p>
-                  <p className="block border bg-background p-3 text-sm text-pretty text-foreground/80">
-                    我们会逐步把旧模板替换为 Enscribe 风格（Next.js + React 渲染），内容依然从 Payload
-                    获取。
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+        <header className="space-y-4">
+          {intro.eyebrow && (
+            <p className="text-xs font-medium uppercase tracking-[0.3em] text-muted-foreground">
+              {intro.eyebrow}
+            </p>
+          )}
+          {(intro.titlePrefix || intro.titleHighlight || intro.titleSuffix) && (
+            <h1 className="text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">
+              {intro.titlePrefix && <span>{intro.titlePrefix} </span>}
+              {intro.titleHighlight && <span className="text-primary">{intro.titleHighlight}</span>}
+              {intro.titleSuffix && <span> {intro.titleSuffix}</span>}
+            </h1>
+          )}
+          {intro.description && (
+            <p className="text-base text-pretty text-muted-foreground sm:text-lg">
+              {intro.description}
+            </p>
+          )}
+        </header>
       </PageAnimation>
 
-      {/* Details */}
       <PageAnimation delay={0.1}>
-        <div className="aspect-square p-2 [grid-area:b]">
-        <div className="size-full border bg-muted">
-          <div className="size-full bg-[url('/static/bento/details-background.png')] bg-cover bg-center bg-no-repeat">
-            <div className="relative size-full bg-[url('/static/bento/details-foreground.png')] bg-cover bg-center bg-no-repeat transition-opacity duration-200 sm:opacity-0 sm:hover:opacity-100">
-              <p className="absolute top-1/2 left-0 ml-4 mr-24 -translate-y-1/2 border bg-background p-3 text-xs text-pretty text-foreground/80">
-                这是一个从 Payload Website Template 迁移到 Enscribe UI 的过程。接下来会替换 Posts
-                列表与详情页。
-              </p>
+        {featuredPostHref ? (
+          <Link
+            aria-label={featuredPostTitle ? `Read latest post: ${featuredPostTitle}` : 'Read latest post'}
+            className="block rounded-2xl border bg-card p-5 transition-colors hover:bg-muted sm:p-6"
+            href={featuredPostHref}
+          >
+            <div className="flex items-center justify-between gap-4">
+              <div className="space-y-2">
+                <p className="text-xs font-medium uppercase tracking-[0.3em] text-muted-foreground">
+                  Latest Post
+                </p>
+                <h2 className="text-2xl font-semibold">
+                  {featuredPostTitle || 'No posts yet.'}
+                </h2>
+                {featuredPost?.publishedAt && (
+                  <p className="text-xs text-muted-foreground">
+                    {formatPublishedAt(featuredPost.publishedAt)}
+                  </p>
+                )}
+              </div>
+              <span className="flex items-center gap-2 rounded-full border px-4 py-2 text-xs font-medium text-foreground">
+                Read
+                <MoveUpRight className="h-4 w-4" />
+              </span>
             </div>
-          </div>
-        </div>
-      </div>
-      </PageAnimation>
-
-      {/* Image */}
-      <PageAnimation delay={0.2}>
-        <div className="aspect-square p-2 [grid-area:c] sm:aspect-[1/2] lg:aspect-square xl:aspect-[1/2]">
-        <div className="size-full border bg-muted">
-          <div className="size-full bg-[url('/static/bento/image-1.png')] bg-cover bg-center bg-no-repeat" />
-        </div>
-      </div>
-      </PageAnimation>
-
-      {/* Latest post */}
-      <PageAnimation delay={0.3}>
-        <div className="aspect-[6/5] p-2 [grid-area:e] sm:aspect-[2/1]">
-        <div className="size-full border bg-muted">
-          <div className="relative size-full bg-[url('/static/bento/blog-background-square.png')] bg-cover bg-center bg-no-repeat sm:bg-[url('/static/bento/blog-background.png')]">
-            <div className="absolute size-full bg-[url('/static/bento/blog-foreground-square.png')] bg-cover bg-center bg-no-repeat transition-opacity duration-200 sm:bg-[url('/static/bento/blog-foreground.png')] sm:opacity-0 sm:hover:opacity-100">
-              <p className="absolute bottom-4 left-16 border bg-background p-2 text-xs text-pretty text-foreground/80 sm:top-[42.5%] sm:right-4 sm:bottom-[inherit] sm:left-[inherit] sm:-translate-y-1/2">
-                Read our latest <br /> post!
-              </p>
-            </div>
-
-            <div className="p-3 sm:size-full sm:p-6">
-              {latestPost && latestPostHref ? (
-                <Link className="flex h-full" href={latestPostHref}>
-                  <div className="relative h-full w-full overflow-hidden border">
-                    {latestPostImage && typeof latestPostImage !== 'string' ? (
-                      <Media fill imgClassName="object-cover" resource={latestPostImage} />
-                    ) : (
-                      <div className="flex h-full w-full items-center justify-center p-4 text-sm text-muted-foreground">
-                        No featured image
-                      </div>
-                    )}
-                  </div>
-                </Link>
+            <div className="mt-5 overflow-hidden rounded-xl border bg-muted">
+              {featuredPostImage && typeof featuredPostImage !== 'string' ? (
+                <div className="relative h-48 sm:h-56">
+                  <Media fill imgClassName="object-cover" resource={featuredPostImage} />
+                </div>
               ) : (
-                <div className="flex h-full items-center justify-center p-6 text-sm text-muted-foreground">
-                  No posts yet.
+                <div className="flex h-40 items-center justify-center text-sm text-muted-foreground">
+                  No featured image
                 </div>
               )}
             </div>
-
-            {latestPost && latestPostHref && (
-              <Link
-                aria-label={latestPostTitle ? `Read latest post: ${latestPostTitle}` : 'Read latest post'}
-                className="absolute bottom-0 end-0 m-3 rounded-full bg-border/50 p-3 text-primary transition-[box-shadow] duration-300 hover:ring-2 hover:ring-ring focus-visible:ring-2 focus-visible:ring-ring"
-                href={latestPostHref}
-                title={latestPostTitle ? `Read latest post: ${latestPostTitle}` : 'Read latest post'}
-              >
-                <MoveUpRight className="h-4 w-4 transition-transform duration-300 hover:rotate-12" />
-              </Link>
-            )}
+          </Link>
+        ) : (
+          <div className="rounded-2xl border bg-card p-5 sm:p-6">
+            <div className="flex items-center justify-between gap-4">
+              <div className="space-y-2">
+                <p className="text-xs font-medium uppercase tracking-[0.3em] text-muted-foreground">
+                  Latest Post
+                </p>
+                <h2 className="text-2xl font-semibold">No posts yet.</h2>
+              </div>
+            </div>
+            <div className="mt-5 overflow-hidden rounded-xl border bg-muted">
+              <div className="flex h-40 items-center justify-center text-sm text-muted-foreground">
+                No featured image
+              </div>
+            </div>
           </div>
+        )}
+      </PageAnimation>
+
+      <PageAnimation delay={0.2}>
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h3 className="text-lg font-semibold">Recent Posts</h3>
+            <Link className="text-sm text-muted-foreground transition hover:text-foreground" href="/posts">
+              View all
+            </Link>
+          </div>
+          {morePosts.length > 0 ? (
+            <div className="space-y-3">
+              {morePosts.map((post) => {
+                const href = post.slug ? `/posts/${post.slug}` : '#'
+                const title = post.title || post.meta?.title || 'Untitled'
+                const publishedAt = formatPublishedAt(post.publishedAt)
+                return (
+                  <Link
+                    key={post.slug ?? title}
+                    className="flex items-center justify-between gap-4 rounded-xl border px-4 py-3 text-sm transition-colors hover:bg-muted"
+                    href={href}
+                  >
+                    <span className="text-foreground">{title}</span>
+                    {publishedAt && <span className="text-xs text-muted-foreground">{publishedAt}</span>}
+                  </Link>
+                )
+              })}
+            </div>
+          ) : (
+            <div className="rounded-xl border px-4 py-6 text-sm text-muted-foreground">
+              No posts yet. Check back soon.
+            </div>
+          )}
         </div>
-      </div>
+      </PageAnimation>
+
+      <PageAnimation delay={0.3}>
+        {(friends.title || friends.description || friends.links?.length) && (
+          <div className="rounded-2xl border bg-muted/30 p-5 sm:p-6">
+            {friends.title && <h3 className="text-lg font-semibold">{friends.title}</h3>}
+            {friends.description && (
+              <p className="mt-2 text-sm text-muted-foreground">{friends.description}</p>
+            )}
+            {friends.links?.length ? (
+              <ul className="mt-4 flex flex-wrap items-start gap-3">
+                {friends.links.map((link, index) => {
+                  const hasAvatar = link.avatar && typeof link.avatar === 'object'
+                  return (
+                    <li key={`${link.name}-${index}`} className="w-fit">
+                      <Link
+                        className="flex w-fit items-center gap-3 rounded-xl border bg-background/60 px-4 py-3 text-sm transition-colors hover:bg-muted"
+                        href={link.url}
+                        rel={link.newTab ? 'noreferrer' : undefined}
+                        target={link.newTab ? '_blank' : undefined}
+                      >
+                        <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full border bg-muted">
+                          {hasAvatar ? (
+                            <Media
+                              imgClassName="h-10 w-10 object-cover"
+                              resource={link.avatar}
+                              size="40px"
+                            />
+                          ) : (
+                            <span className="text-xs text-muted-foreground">
+                              {(link.name || '').slice(0, 2).toUpperCase()}
+                            </span>
+                          )}
+                        </div>
+                        <span className="font-medium text-foreground">{link.name}</span>
+                      </Link>
+                    </li>
+                  )
+                })}
+              </ul>
+            ) : null}
+          </div>
+        )}
       </PageAnimation>
     </section>
   )

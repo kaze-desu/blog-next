@@ -13,7 +13,7 @@ export async function EnscribeFooter() {
   return (
     <footer className="py-4">
       <div className="mx-auto flex max-w-3xl flex-col items-center justify-center gap-y-2 px-4 sm:flex-row sm:justify-between">
-        <span className="text-muted-foreground text-sm">&copy; {year} enscribe</span>
+        <span className="text-muted-foreground text-sm">&copy; {year} 由KAZE桑维护中~</span>
 
         <div className="flex items-center gap-4">
           <ThemeSelector />

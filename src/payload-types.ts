@@ -202,7 +202,7 @@ export interface Page {
       | null;
     media?: (number | null) | Media;
   };
-  layout: (CallToActionBlock | ContentBlock | MediaBlock | ArchiveBlock | FormBlock)[];
+  layout: (CallToActionBlock | ContentBlock | MediaBlock | ArchiveBlock | FormBlock | HomeLayoutBlock)[];
   meta?: {
     title?: string | null;
     /**
@@ -803,6 +803,35 @@ export interface Form {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "HomeLayoutBlock".
+ */
+export interface HomeLayoutBlock {
+  intro?: {
+    eyebrow?: string | null;
+    titlePrefix?: string | null;
+    titleHighlight?: string | null;
+    titleSuffix?: string | null;
+    description?: string | null;
+  };
+  friends?: {
+    title?: string | null;
+    description?: string | null;
+    links?:
+      | {
+          avatar?: (number | null) | Media;
+          name: string;
+          url: string;
+          newTab?: boolean | null;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'homeLayout';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "redirects".
  */
 export interface Redirect {
@@ -1113,6 +1142,7 @@ export interface PagesSelect<T extends boolean = true> {
         mediaBlock?: T | MediaBlockSelect<T>;
         archive?: T | ArchiveBlockSelect<T>;
         formBlock?: T | FormBlockSelect<T>;
+        homeLayout?: T | HomeLayoutBlockSelect<T>;
       };
   meta?:
     | T
@@ -1209,6 +1239,38 @@ export interface FormBlockSelect<T extends boolean = true> {
   form?: T;
   enableIntro?: T;
   introContent?: T;
+  id?: T;
+  blockName?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "HomeLayoutBlock_select".
+ */
+export interface HomeLayoutBlockSelect<T extends boolean = true> {
+  intro?:
+    | T
+    | {
+        eyebrow?: T;
+        titlePrefix?: T;
+        titleHighlight?: T;
+        titleSuffix?: T;
+        description?: T;
+      };
+  friends?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        links?:
+          | T
+          | {
+              avatar?: T;
+              name?: T;
+              url?: T;
+              newTab?: T;
+              id?: T;
+            };
+      };
   id?: T;
   blockName?: T;
 }

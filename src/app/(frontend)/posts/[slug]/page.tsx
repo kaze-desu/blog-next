@@ -200,17 +200,16 @@ export default async function Post({ params: paramsPromise }: Args) {
                       <span>{readTime}</span>
                     </div>
 
-                    {categoryLabels.length > 0 ? (
-                      <div className="flex w-full flex-wrap items-center justify-center gap-2 py-2 sm:w-fit sm:px-2 sm:py-0 first:sm:pl-0 last:sm:pr-0">
-                        {categoryLabels.map((label) => (
-                          <span key={label} className="inline-flex items-center gap-1">
-                            <Bookmark className="h-3 w-3" />
-                            <span>{label}</span>
-                          </span>
-                        ))}
-                      </div>
-                    ) : null}
+                {categoryLabels.length > 0 ? (
+                  <div className="flex w-full flex-wrap items-center justify-center gap-2 py-2 sm:w-fit sm:px-2 sm:py-0 first:sm:pl-0 last:sm:pr-0">
+                    {categoryLabels.map((label) => (
+                      <span key={label} className="inline-flex items-center gap-1">
+                        <Bookmark className="h-3 w-3" />
+                        <span>{label}</span>
+                      </span>
+                    ))}
                   </div>
+                ) : null}
                 </div>
 
                 {relatedPosts.length > 0 ? (
