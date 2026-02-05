@@ -37,6 +37,7 @@ export function PostWithTOC({ children }: { children: React.ReactNode }) {
   const [activeId, setActiveId] = useState<string | null>(null)
   const [progress, setProgress] = useState(0)
   const [detailsOpen, setDetailsOpen] = useState(false)
+  const hasToc = toc.length > 0
 
   const currentText = useMemo(() => {
     if (!activeId) return 'Overview'
@@ -131,9 +132,13 @@ export function PostWithTOC({ children }: { children: React.ReactNode }) {
   const dashOffset = PROGRESS_CIRCUMFERENCE * (1 - progress)
 
   return (
-    <div className="xl:grid xl:grid-cols-[16rem_minmax(0,1fr)] xl:gap-8">
+    <div
+      className={cn(
+        hasToc && 'xl:grid xl:grid-cols-[16rem_minmax(0,1fr)] xl:gap-8',
+      )}
+    >
       {/* Desktop TOC */}
-      {toc.length > 0 ? (
+      {hasToc ? (
         <aside className="sticky top-20 hidden h-[calc(100vh-5rem)] max-w-md xl:block">
           <div className="max-h-[calc(100vh-8rem)] overflow-auto pr-2">
             <div className="px-2 py-2 text-xs font-medium text-muted-foreground">On this page</div>
@@ -157,13 +162,11 @@ export function PostWithTOC({ children }: { children: React.ReactNode }) {
             </ul>
           </div>
         </aside>
-      ) : (
-        <aside className="hidden xl:block" />
-      )}
+      ) : null}
 
       <div>
         {/* Mobile TOC */}
-        {toc.length > 0 ? (
+        {hasToc ? (
           <div className="sticky top-12 z-40 w-full border-y bg-background/50 backdrop-blur-sm xl:hidden">
             <details
               className="group"
