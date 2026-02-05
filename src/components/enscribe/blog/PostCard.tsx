@@ -11,7 +11,15 @@ import { CategoryBadge } from './CategoryBadge'
 
 type PostCardData = Pick<
   Post,
-  'createdAt' | 'publishedAt' | 'slug' | 'title' | 'meta' | 'categories' | 'content' | 'populatedAuthors'
+  | 'createdAt'
+  | 'publishedAt'
+  | 'slug'
+  | 'title'
+  | 'meta'
+  | 'categories'
+  | 'content'
+  | 'populatedAuthors'
+  | 'heroImage'
 >
 
 function getCategoryLabel(category: unknown): string | null {
@@ -27,7 +35,7 @@ export function PostCard({ post }: { post: PostCardData }) {
   const description = post?.meta?.description || ''
   const dateValue = post?.publishedAt || post?.createdAt
   const dateLabel = dateValue ? formatDateTime(String(dateValue)) : ''
-  const image = post?.meta?.image
+  const image = post.heroImage && typeof post.heroImage !== 'string' ? post.heroImage : null
 
   const categoryLabels = Array.isArray(post?.categories)
     ? post.categories.map(getCategoryLabel).filter((label): label is string => Boolean(label))
