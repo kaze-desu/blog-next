@@ -19,7 +19,15 @@ const PAGE_SIZE = 12
 
 type PostListItem = Pick<
   Post,
-  'createdAt' | 'publishedAt' | 'slug' | 'title' | 'meta' | 'categories' | 'content' | 'populatedAuthors'
+  | 'createdAt'
+  | 'publishedAt'
+  | 'slug'
+  | 'title'
+  | 'meta'
+  | 'categories'
+  | 'tags'
+  | 'content'
+  | 'populatedAuthors'
 >
 
 function groupPostsByYear(docs: PostListItem[]) {
@@ -56,7 +64,9 @@ export default async function Page() {
       createdAt: true,
       publishedAt: true,
       categories: true,
+      tags: true,
       meta: true,
+      heroImage: true,
       content: true,
       populatedAuthors: true,
     },

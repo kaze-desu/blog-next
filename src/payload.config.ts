@@ -15,11 +15,20 @@ import { Header } from './Header/config'
 import { plugins } from './plugins'
 import { defaultLexical } from '@/fields/defaultLexical'
 import { getServerSideURL } from './utilities/getURL'
-
+import { en } from '@payloadcms/translations/languages/en'
+import { zh } from '@payloadcms/translations/languages/zh'
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
 export default buildConfig({
+  i18n: {
+    fallbackLanguage: 'en', // default
+    supportedLanguages: { en, zh },
+  },
+  localization: {
+    locales: ['en', 'zh'], // required
+    defaultLocale: 'zh', // required
+  },
   admin: {
     // Prevent noisy Next.js hydration warnings in Admin UI due to browser extensions
     // injecting attributes into <html> before React hydrates (e.g. LanguageTool).
