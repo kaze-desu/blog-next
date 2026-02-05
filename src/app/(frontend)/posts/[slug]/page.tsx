@@ -11,10 +11,10 @@ import configPromise from '@payload-config'
 import { getPayload } from 'payload'
 import { draftMode } from 'next/headers'
 import React, { cache } from 'react'
-import RichText from '@/components/RichText'
 import { RichTextWithLightbox } from '@/components/Lightbox/RichTextWithLightbox.client'
 import { PageAnimation } from '@/components/PageAnimation'
 import { ReadingProgress } from '@/components/ReadingProgress/ReadingProgress.client'
+import { Tag } from 'lucide-react'
 
 import type { Post } from '@/payload-types'
 
@@ -22,7 +22,7 @@ import { formatAuthors } from '@/utilities/formatAuthors'
 import { formatDateTime } from '@/utilities/formatDateTime'
 import { PostHero } from '@/heros/PostHero'
 import { generateMeta } from '@/utilities/generateMeta'
-import { readingTimeFromLexical, lexicalWordCount } from '@/utilities/readingTime'
+import { readingTimeFromLexical } from '@/utilities/readingTime'
 import PageClient from './page.client'
 import { LivePreviewListener } from '@/components/LivePreviewListener'
 
@@ -89,7 +89,7 @@ export default async function Post({ params: paramsPromise }: Args) {
               {/* RelatedPosts intentionally omitted in enscribe mode; keep in template mode */}
               {post.relatedPosts && post.relatedPosts.length > 0 && (
                 <RelatedPosts
-                  className="mt-12 max-w-[52rem] lg:grid lg:grid-cols-subgrid col-start-1 col-span-3 grid-rows-[2fr]"
+                  className="lg:container mt-12 max-w-[52rem] lg:grid lg:grid-cols-subgrid col-start-1 col-span-3 grid-rows-[2fr]"
                   docs={post.relatedPosts.filter((p) => typeof p === 'object')}
                 />
               )}
@@ -120,10 +120,28 @@ export default async function Post({ params: paramsPromise }: Args) {
   const categoryLabels =
     Array.isArray(post.categories) && post.categories.length > 0
       ? post.categories
-          .map((c) =>
-            typeof c === 'object' && c && 'title' in c ? (c as { title?: unknown }).title : null,
+          .map((category) =>
+            typeof category === 'object' && category && 'title' in category
+              ? (category as { title?: unknown }).title
+              : null,
           )
           .filter((t): t is string => typeof t === 'string' && t.length > 0)
+      : []
+
+  const tagLabels =
+    Array.isArray(post.tags) && post.tags.length > 0
+      ? post.tags
+          .map((tag) =>
+            typeof tag === 'object' && tag && 'title' in tag
+              ? (tag as { title?: unknown }).title
+              : null,
+          )
+          .filter((t): t is string => typeof t === 'string' && t.length > 0)
+      : []
+
+  const relatedPosts =
+    Array.isArray(post.relatedPosts) && post.relatedPosts.length > 0
+      ? post.relatedPosts.filter((item): item is Post => typeof item === 'object' && item !== null)
       : []
 
   const { olderPost, newerPost } = await queryAdjacentPosts({ current: post })
@@ -186,13 +204,18 @@ export default async function Post({ params: paramsPromise }: Args) {
                   {categoryLabels.length > 0 ? (
                     <div className="flex flex-wrap justify-center gap-2">
                       {categoryLabels.map((label) => (
-                        <CategoryBadge key={label} label={label} />
+                        <span key={label} className="inline-flex items-center gap-1 text-xs text-muted-foreground">
+                          <Tag className="h-3 w-3" />
+                          <span>{label}</span>
+                        </span>
                       ))}
                     </div>
                   ) : null}
                 </div>
 
-                <PostNavigation newerPost={newerPost} olderPost={olderPost} />
+                {relatedPosts.length > 0 ? (
+                  <RelatedPosts className="mt-2 w-full" docs={relatedPosts} />
+                ) : null}
               </section>
             </PageAnimation>
 
@@ -206,8 +229,21 @@ export default async function Post({ params: paramsPromise }: Args) {
               </div>
             </PageAnimation>
 
+            {tagLabels.length > 0 ? (
+              <PageAnimation>
+                <div className="mt-8 flex flex-wrap items-center justify-start gap-2 text-sm">
+                  <span className="inline-flex items-center text-muted-foreground">
+                    <Tag className="h-4 w-4" />
+                  </span>
+                  {tagLabels.map((label) => (
+                    <CategoryBadge key={label} label={label} showIcon={false} />
+                  ))}
+                </div>
+              </PageAnimation>
+            ) : null}
+
             <PageAnimation>
-              <div className="mt-8">
+              <div className="mt-6">
                 <PostNavigation newerPost={newerPost} olderPost={olderPost} />
               </div>
             </PageAnimation>
