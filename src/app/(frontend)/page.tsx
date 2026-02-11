@@ -26,7 +26,7 @@ const fallbackIntro = {
 
 const fallbackFriends = {
   title: 'Friends Links',
-  description: '功能正在开发中...',
+  description: 'No friends yet...',
   links: [],
 }
 

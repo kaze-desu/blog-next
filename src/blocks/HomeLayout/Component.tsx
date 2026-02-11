@@ -69,7 +69,7 @@ export const HomeLayoutBlock: React.FC<HomeLayoutBlockProps> = ({ intro, friends
                     <Link
                       className="flex w-fit items-center gap-3 rounded-xl border bg-background/60 px-4 py-3 text-sm transition-colors hover:bg-muted"
                       href={link.url}
-                      rel={link.newTab ? 'noreferrer' : undefined}
+                      rel={link.newTab ? 'noopener noreferrer' : undefined}
                       target={link.newTab ? '_blank' : undefined}
                     >
                       <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full border bg-muted">
